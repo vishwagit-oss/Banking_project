@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://banking.com/transaction/soap"
+           targetNamespace="http://banking.com/transaction/soap"
+           elementFormDefault="qualified">
+
+    <xs:element name="ExecuteTransferRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="fromAccountNumber" type="xs:string"/>
+                <xs:element name="toAccountNumber" type="xs:string"/>
+                <xs:element name="amount" type="xs:decimal"/>
+                <xs:element name="reference" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ExecuteTransferResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="transactionId" type="xs:long"/>
+                <xs:element name="status" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="InquireTransferRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="fromAccountNumber" type="xs:string"/>
+                <xs:element name="toAccountNumber" type="xs:string"/>
+                <xs:element name="amount" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="InquireTransferResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="valid" type="xs:boolean"/>
+                <xs:element name="message" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

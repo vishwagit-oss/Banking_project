@@ -1,0 +1,23 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: transaction-service
+  data:
+    mongodb:
+      uri: ${MONGO_URI:mongodb://localhost:27017}
+      database: banking_transactions
+
+# Account Service URL (for service-to-service calls). Use https:// in production.
+account-service:
+  url: ${ACCOUNT_SERVICE_URL:http://localhost:8081}
+
+# Shared secret for service-to-service (must match account-service and notification-service)
+app:
+  internal-api:
+    key: ${INTERNAL_API_KEY:internal-dev-key-change-in-production}
+
+spring.webservices:
+  servlet:
+    path: /ws

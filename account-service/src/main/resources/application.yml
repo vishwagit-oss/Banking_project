@@ -1,0 +1,44 @@
+server:
+  port: 8081
+  # HTTPS in production: set server.ssl.key-store, key-store-password, key-store-type (PKCS12)
+  # ssl:
+  #   key-store: classpath:keystore.p12
+  #   key-store-password: ${SSL_KEYSTORE_PASSWORD}
+  #   key-store-type: PKCS12
+
+spring:
+  application:
+    name: account-service
+  data:
+    mongodb:
+      # Production: use env MONGO_URI with TLS and auth, e.g. mongodb+srv://user:pass@cluster/db?retryWrites=true&w=majority
+      uri: ${MONGO_URI:mongodb://localhost:27017}
+      database: banking_accounts
+
+# SOAP endpoint will be at /ws/accounts.wsdl
+spring.webservices:
+  servlet:
+    path: /ws
+
+# Secrets from environment in production (never commit real values)
+# JWT: set JWT_SECRET (min 256 bits / 32 chars) and optionally JWT_EXPIRATION_MS
+app:
+  jwt:
+    secret: ${JWT_SECRET:banking-demo-secret-change-in-production-min-256-bits-required}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  # Shared secret for service-to-service calls (account ↔ transaction ↔ notification)
+  internal-api:
+    key: ${INTERNAL_API_KEY:internal-dev-key-change-in-production}
+
+# Transaction Service URL (for proxying from UI). Use https:// in production.
+transaction-service:
+  url: ${TRANSACTION_SERVICE_URL:http://localhost:8082}
+
+# Notification Service for audit logging
+notification-service:
+  url: ${NOTIFICATION_SERVICE_URL:http://localhost:8083}
+
+# Rate limit for auth (bank-style: limit brute force)
+app.rate-limit.auth:
+  max-attempts: 5
+  window-seconds: 60

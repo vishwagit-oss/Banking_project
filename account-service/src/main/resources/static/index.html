@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banking Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ========== LOGIN / ACTIVATE (like Scotiabank sign-in) ========== -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-box">
+      <p class="auth-welcome">Welcome to</p>
+      <h1 class="auth-title">Banking Portal</h1>
+      <p class="auth-tagline">Sign in to your account</p>
+      <form id="form-login" class="auth-form">
+        <label>Username <input type="text" name="username" required placeholder="Your username" autocomplete="username"></label>
+        <label>Password <input type="password" name="password" required placeholder="Password" autocomplete="current-password"></label>
+        <button type="submit">Sign In</button>
+      </form>
+      <p class="auth-divider">New to online banking?</p>
+      <button type="button" id="btn-show-activate" class="link-btn">Activate now</button>
+      <form id="form-activate" class="auth-form" style="display:none;">
+        <h2>Activate online banking</h2>
+        <div class="activate-help">
+          <strong>How to get your Customer ID:</strong>
+          <ol>
+            <li>Sign in as <strong>Admin</strong> (username: <code>admin</code>, password: <code>admin123</code>).</li>
+            <li>Open the <strong>Customers</strong> tab and create a customer, or look at the list.</li>
+            <li>Each customer shows <strong>Customer ID: 1</strong>, <strong>2</strong>, etc. Use that number below.</li>
+          </ol>
+        </div>
+        <label>Customer ID <input type="number" name="customerId" required min="1" placeholder="e.g. 1" title="The number from the Customers list (Admin)"></label>
+        <label>Choose username <input type="text" name="username" required minlength="3" placeholder="Username"></label>
+        <label>Choose password <input type="password" name="password" required minlength="6" placeholder="At least 6 characters"></label>
+        <button type="submit">Activate</button>
+        <button type="button" id="btn-back-login" class="link-btn">Back to Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="app-screen" class="app" style="display:none;">
+    <header class="header">
+      <h1>Banking Portal</h1>
+      <div class="header-right">
+        <span id="user-info" class="user-info"></span>
+        <button type="button" id="btn-logout" class="logout-btn">Sign Out</button>
+      </div>
+      <div class="mode-switch">
+        <button type="button" class="mode-btn active" data-mode="customer">I'm a Customer</button>
+        <button type="button" class="mode-btn" data-mode="admin">Admin</button>
+      </div>
+    </header>
+
+    <!-- ========== CUSTOMER PHASE ========== -->
+    <div id="phase-customer" class="phase active">
+      <div class="card form-card customer-login">
+        <h2>View my accounts</h2>
+        <p class="hint">Enter your <strong>Customer ID</strong> (you get this when you open an account at the bank).</p>
+        <form id="form-customer-login">
+          <label>Customer ID <input type="number" name="customerId" required min="1" placeholder="e.g. 1"></label>
+          <button type="submit">Load my accounts</button>
+        </form>
+      </div>
+      <div id="customer-my-accounts" class="card" style="display:none;">
+        <h2>My accounts (your account numbers)</h2>
+        <p class="hint">Use these account numbers for transfers. Copy the number you need.</p>
+        <div id="customer-account-list" class="list"></div>
+      </div>
+      <nav class="tabs customer-tabs" style="display:none;">
+        <button type="button" class="tab active" data-tab="c-transfer">Transfer</button>
+        <button type="button" class="tab" data-tab="c-deposit">Deposit / Withdraw</button>
+        <button type="button" class="tab" data-tab="c-history">History</button>
+      </nav>
+      <main class="panels customer-panels" style="display:none;">
+        <section id="panel-c-transfer" class="panel active">
+          <div class="card form-card">
+            <h2>Transfer</h2>
+            <form id="form-c-transfer">
+              <label>From account <input type="text" name="fromAccountNumber" required placeholder="Your account number"></label>
+              <label>To account <input type="text" name="toAccountNumber" required placeholder="Other account number"></label>
+              <label>Amount <input type="number" name="amount" required min="0.01" step="0.01"></label>
+              <label>Reference <input type="text" name="reference" placeholder="Optional"></label>
+              <button type="submit">Transfer</button>
+            </form>
+          </div>
+        </section>
+        <section id="panel-c-deposit" class="panel">
+          <div class="card form-card">
+            <h2>Deposit / Withdraw</h2>
+            <form id="form-c-deposit">
+              <label>My account number <input type="text" name="accountNumber" required placeholder="From list above"></label>
+              <label>Amount <input type="number" name="amount" required min="0.01" step="0.01"></label>
+              <label>Reference <input type="text" name="reference" placeholder="Optional"></label>
+              <button type="submit" name="action" value="deposit">Deposit</button>
+              <button type="submit" name="action" value="withdraw" class="btn-secondary">Withdraw</button>
+            </form>
+          </div>
+        </section>
+        <section id="panel-c-history" class="panel">
+          <div class="card form-card">
+            <h2>Transaction history</h2>
+            <form id="form-c-history">
+              <label>My account number <input type="text" name="accountNumber" required placeholder="From list above"></label>
+              <button type="submit">Load history</button>
+            </form>
+          </div>
+          <div class="card">
+            <div id="c-history-list" class="list">Load history to see transactions.</div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ========== ADMIN PHASE ========== -->
+    <div id="phase-admin" class="phase">
+      <nav class="tabs">
+        <button type="button" class="tab active" data-tab="customers">Customers</button>
+        <button type="button" class="tab" data-tab="accounts">Accounts</button>
+        <button type="button" class="tab" data-tab="transfer">Transfer</button>
+        <button type="button" class="tab" data-tab="history">History</button>
+      </nav>
+      <main class="panels">
+        <section id="panel-customers" class="panel active">
+          <div class="card form-card">
+            <h2>New Customer</h2>
+            <form id="form-customer" autocomplete="off">
+              <label>Name <input type="text" name="name" required placeholder="Full name" autocomplete="off"></label>
+              <label>Email <input type="email" name="email" required placeholder="email@example.com" autocomplete="off"></label>
+              <label>Phone <input type="text" name="phone" required placeholder="+1 234 567 8900" autocomplete="off"></label>
+              <button type="submit">Create Customer</button>
+            </form>
+          </div>
+          <div class="card form-card">
+            <h2>Find customer's account numbers</h2>
+            <p class="hint">Enter Customer ID to see all accounts (and account numbers) for that customer.</p>
+            <form id="form-admin-customer-accounts">
+              <label>Customer ID <input type="number" name="customerId" min="1" placeholder="e.g. 1"></label>
+              <button type="submit">Show accounts</button>
+            </form>
+            <div id="admin-customer-accounts-list" class="list" style="margin-top:0.75rem;"></div>
+          </div>
+          <div class="card">
+            <h2>All Customers</h2>
+            <div id="customer-list" class="list">Loading…</div>
+          </div>
+        </section>
+        <section id="panel-accounts" class="panel">
+          <div class="card form-card">
+            <h2>New Account</h2>
+            <p class="hint">Each customer can have at most one Savings and one Current account.</p>
+            <form id="form-account">
+              <label>Customer <select name="customerId" required><option value="">Select customer</option></select></label>
+              <label>Type <select name="type"><option value="SAVINGS">Savings</option><option value="CURRENT">Current</option></select></label>
+              <label>Initial balance <input type="number" name="initialBalance" min="0" step="0.01" value="0"></label>
+              <label>Currency <input type="text" name="currency" value="USD" maxlength="3"></label>
+              <button type="submit">Create Account</button>
+            </form>
+          </div>
+          <div class="card form-card">
+            <h2>Lookup account by number</h2>
+            <form id="form-lookup-account">
+              <label>Account number <input type="text" name="accountNumber" placeholder="e.g. ACC..."></label>
+              <button type="submit">Lookup</button>
+            </form>
+          </div>
+          <div class="card">
+            <h2>Account details</h2>
+            <div id="account-list" class="list">Lookup by account number above.</div>
+          </div>
+        </section>
+        <section id="panel-transfer" class="panel">
+          <div class="card form-card">
+            <h2>Transfer</h2>
+            <form id="form-transfer">
+              <label>From account <input type="text" name="fromAccountNumber" required placeholder="Account number"></label>
+              <label>To account <input type="text" name="toAccountNumber" required placeholder="Account number"></label>
+              <label>Amount <input type="number" name="amount" required min="0.01" step="0.01"></label>
+              <label>Reference <input type="text" name="reference" placeholder="Optional"></label>
+              <button type="submit">Transfer</button>
+            </form>
+          </div>
+          <div class="card form-card">
+            <h2>Deposit / Withdraw</h2>
+            <form id="form-deposit">
+              <label>Account number <input type="text" name="accountNumber" required placeholder="Account number"></label>
+              <label>Amount <input type="number" name="amount" required min="0.01" step="0.01"></label>
+              <label>Reference <input type="text" name="reference" placeholder="Optional"></label>
+              <button type="submit" name="action" value="deposit">Deposit</button>
+              <button type="submit" name="action" value="withdraw" class="btn-secondary">Withdraw</button>
+            </form>
+          </div>
+        </section>
+        <section id="panel-history" class="panel">
+          <div class="card form-card">
+            <h2>Transaction history</h2>
+            <form id="form-history">
+              <label>Account number <input type="text" name="accountNumber" required placeholder="Account number"></label>
+              <button type="submit">Load history</button>
+            </form>
+          </div>
+          <div class="card">
+            <h2>Results</h2>
+            <div id="history-list" class="list">Enter account number and click Load history.</div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+  </div>
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
