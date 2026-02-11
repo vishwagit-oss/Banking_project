@@ -14,7 +14,11 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:8081", "http://127.0.0.1:8081"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:8081",
+                "http://127.0.0.1:8081",
+                "https://bankingproject-production.up.railway.app",
+                "http://bankingproject-production.up.railway.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

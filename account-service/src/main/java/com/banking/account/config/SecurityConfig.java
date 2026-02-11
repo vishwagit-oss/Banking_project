@@ -54,7 +54,8 @@ public class SecurityConfig {
                         .frameOptions(f -> f.sameOrigin())
                         .xssProtection(x -> x.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
                         .contentTypeOptions(c -> {})
-                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';"))
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"))
                 )
                 // Add all custom filters before the standard one (no custom class as reference = no order lookup)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
