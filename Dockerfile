@@ -1,4 +1,4 @@
-imp# Build stage: use Maven to build account-service
+# Build stage: use Maven to build account-service
 FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
